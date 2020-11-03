@@ -21,7 +21,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 import requests
 
-#import ee 
+#import ee
 
 try:
     import netCDF4
@@ -35,10 +35,10 @@ from .Function import Function
 class Environment:
     """Keeps all environment information stored, such as wind and temperature
     conditions, as well as gravity and rail length.
-    
+
     Attributes
     ----------
-    
+
         Constants
         Environment.earthRadius : float
             Value of Earth's Radius = 6.3781e6 m.
@@ -57,9 +57,9 @@ class Environment:
         Environment.lon : float
             Launch site longitude.
         Environment.datum: string
-            The desired reference ellipsoide model, the following optiions are 
-            available: "SAD69", "WGS84", "NAD83", and "SIRGAS2000". The default 
-            is "SIRGAS2000", then this model will be used if the user make some 
+            The desired reference ellipsoide model, the following optiions are
+            available: "SAD69", "WGS84", "NAD83", and "SIRGAS2000". The default
+            is "SIRGAS2000", then this model will be used if the user make some
             typing mistake
         Environment.initialEast: float
             Launch site East UTM coordinate
@@ -68,7 +68,7 @@ class Environment:
         Environment.initialUtmZone: int
             Launch site UTM zone number
         Environment.initialUtmLetter: string
-            Launch site UTM letter, to keep the latitude band and describe the 
+            Launch site UTM letter, to keep the latitude band and describe the
             UTM Zone
         Environment.initialHemisphere: string
             Launch site S/N hemisphere
@@ -77,15 +77,15 @@ class Environment:
         Environment.elevation : float
             Launch site elevation.
         Environment.date : datetime
-            Date time of launch.    
-        
+            Date time of launch.
+
         Topographic informations:
         Environment.elevLonArray: array
             Unidimentional array containing the longitude coordinates
         Environment.elevLatArray: array
             Unidimentional array containing the latitude coordinates
         Environment.elevArray: array
-            Two-Dimentional Array containing the elevation information 
+            Two-Dimentional Array containing the elevation information
         Environment.topograficProfileAticvated: bool
             True if the user already set a topographic plofile
 
@@ -129,7 +129,7 @@ class Environment:
             Can be accessed as regular array, or called
             as a function. See Function for more information.
 
-        Atmosphere Wind Conditions: 
+        Atmosphere Wind Conditions:
         Environment.windSpeed : Function
             Wind speed in m/s as a function of altitude.
             Can be accessed as regular array, or called
@@ -254,7 +254,7 @@ class Environment:
            Defined if netCDF or OPeNDAP file is used, for Forecasts,
            Reanalysis and Ensembles. List of geometric height
            corresponding to launch site location.
-        
+
         Atmospheric Model Ensemble Specific Data
         Environment.levelEnsemble : array
             Only defined when using Ensembles.
@@ -379,12 +379,12 @@ class Environment:
     def setDate(self, date):
         """Set date and time of launch and update weather conditions if
         date dependent atmospheric model is used.
-        
+
         Parameters
         ----------
         date : Date
             Date object specifying launch date and time.
-        
+
         Return
         ------
         None
@@ -404,7 +404,7 @@ class Environment:
     def setLocation(self, latitude, longitude):
         """Set latitude and longitude of launch and update atmospheric
         conditions if location dependent model is being used.
-        
+
         Parameters
         ----------
         latitude : float
@@ -413,7 +413,7 @@ class Environment:
         longitude : float
             Longitude of launch site. Either from 0 to 360 degrees
             or from -180 to 180 degrees.
-        
+
         Return
         ------
         None
@@ -434,7 +434,7 @@ class Environment:
     def setElevation(self, elevation="Open-Elevation"):
         """Set elevation of launch site given user input or using the
         Open-Elevation API.
-        
+
         Parameters
         ----------
         elevation : float, string, optional
@@ -444,7 +444,7 @@ class Environment:
             the Open-Elevation API to find elevation data. For this
             option, latitude and longitude must have already been
             specified. See Environment.setLocation for more details.
-        
+
         Return
         ------
         None
@@ -490,7 +490,7 @@ class Environment:
         crs=None
     ):
         """ [UNDER CONSTRUCTION] Defines the Topographic profile, importing data
-        from previous downloaded files. Mainly data from the Shuttle Radar 
+        from previous downloaded files. Mainly data from the Shuttle Radar
         Topography Mission (SRTM) and NASA Digital Elevation Model will be used
         but other models and methods can be implemented in the future.
         So far, this function can only handle data from NASADEM, available at:
@@ -499,18 +499,18 @@ class Environment:
         Parameters
         ----------
         type : string
-            Defines the topographic model to be used, usually 'NASADEM Merged 
-            DEM Global 1 arc second nc' can be used. To download this kind of 
-            data, acess 'https://search.earthdata.nasa.gov/search'. 
+            Defines the topographic model to be used, usually 'NASADEM Merged
+            DEM Global 1 arc second nc' can be used. To download this kind of
+            data, acess 'https://search.earthdata.nasa.gov/search'.
             NASADEM data products were derived from original telemetry data from
             the Shuttle Radar Topography Mission (SRTM).
         file : string
-            The path/name of the topografic file. Usually .nc provided by 
+            The path/name of the topografic file. Usually .nc provided by
         dictionary : string, optional
-            Dictionary that you help with reading the spcified file, by default 
+            Dictionary that you help with reading the spcified file, by default
             'netCDF4' which works well with .nc files will be supported
         crs : string, optional
-            Coordinate reference system, by default None, which will use the crs 
+            Coordinate reference system, by default None, which will use the crs
             provided by the file
         """
 
@@ -522,7 +522,7 @@ class Environment:
                 self.elevArray = rootgrp.variables['NASADEM_HGT'][:].tolist()
                 #crsArray = rootgrp.variables['crs'][:].tolist().
                 self.topograficProfileAticvated = True
-                
+
                 print("Region covered by the Topographical file: ")
                 print("Latitude from {:.6f}° to {:.6f}°".format(
                     self.elevLatArray[-1], self.elevLatArray[0]
@@ -530,11 +530,11 @@ class Environment:
                 print("Longitude from {:.6f}° to {:.6f}°".format(
                     self.elevLonArray[0], self.elevLonArray[-1]
                 ))
-        
+
         return None
 
     def getElevationFromTopograghicProfile(self, lat, lon):
-        """ Function that receives the coordinates of a point and find its 
+        """ Function that receives the coordinates of a point and find its
         elevation in the provided Topographic Profile
 
         Parameters
@@ -561,7 +561,7 @@ class Environment:
                 "You must define a Topographic profile first, please use the method Environment.setTopograghicProfile()"
                 )
             return None
-        
+
         # Find latitude index
         # Check if reversed or sorted
         if self.elevLatArray[0] < self.elevLatArray[-1]:
@@ -635,7 +635,7 @@ class Environment:
 
         Parameters
         ----------
-        type : string 
+        type : string
             One of the following options:
             - 'StandardAtmosphere': sets pressure and temperature
             profiles corresponding to the International Standard
@@ -651,7 +651,7 @@ class Environment:
             http://weather.uwyo.edu/upperair/sounding.html.
             An example of a valid link would be:
             http://weather.uwyo.edu/cgi-bin/sounding?region=samer&TYPE=TEXT%3ALIST&YEAR=2019&MONTH=02&FROM=0200&TO=0200&STNM=82599
-            
+
             - 'NOAARucSounding': sets pressure, temperature, wind-u
             and wind-v profiles and surface elevation obtained from
             an upper air sounding given by the file parameter through
@@ -670,10 +670,10 @@ class Environment:
             forecast file in netCDF format or from an OPeNDAP URL, both
             given through the file parameter. When this type
             is chosen, the date and location of the launch
-            should already have been set through the date and 
+            should already have been set through the date and
             location parameters when initializing the Environment.
-            The netCDF and OPeNDAP datasets must contain at least 
-            geopotential height or geopotential, temperature, 
+            The netCDF and OPeNDAP datasets must contain at least
+            geopotential height or geopotential, temperature,
             wind-u and wind-v profiles as a function of pressure levels.
             If surface geopotential or geopotential height is given,
             elevation is also set. Otherwise, elevation is not changed.
@@ -684,19 +684,19 @@ class Environment:
             dataset to be accurately read. Lastly, the dataset must use
             a rectangular grid sorted in either ascending or descending
             order of latitude and longitude.
-            
+
             - 'Reanalysis': sets pressure, temperature, wind-u and wind-v
             profiles and surface elevation obtained from a weather
             forecast file in netCDF format or from an OPeNDAP URL, both
             given through the file parameter. When this type
             is chosen, the date and location of the launch
-            should already have been set through the date and 
+            should already have been set through the date and
             location parameters when initializing the Environment.
-            The netCDF and OPeNDAP datasets must contain at least 
-            geopotential height or geopotential, temperature, 
+            The netCDF and OPeNDAP datasets must contain at least
+            geopotential height or geopotential, temperature,
             wind-u and wind-v profiles as a function of pressure levels.
             If surface geopotential or geopotential height is given,
-            elevation is also set. Otherwise, elevation is not changed. 
+            elevation is also set. Otherwise, elevation is not changed.
             Profiles are interpolated bi-linearly using supplied
             latitude and longitude. The date used is the nearest one
             to the date supplied. Furthermore, a dictionary must be
@@ -704,16 +704,16 @@ class Environment:
             dataset to be accurately read. Lastly, the dataset must use
             a rectangular grid sorted in either ascending or descending
             order of latitude and longitude.
-            
+
             - 'Ensemble': sets pressure, temperature, wind-u and wind-v
             profiles and surface elevation obtained from a weather
             forecast file in netCDF format or from an OPeNDAP URL, both
             given through the file parameter. When this type
             is chosen, the date and location of the launch
-            should already have been set through the date and 
+            should already have been set through the date and
             location parameters when initializing the Environment.
-            The netCDF and OPeNDAP datasets must contain at least 
-            geopotential height or geopotential, temperature, 
+            The netCDF and OPeNDAP datasets must contain at least
+            geopotential height or geopotential, temperature,
             wind-u and wind-v profiles as a function of pressure
             levels. If surface geopotential or geopotential height
             is given, elevation is also set. Otherwise, elevation is not
@@ -726,7 +726,7 @@ class Environment:
             order of latitude and longitude. By default the first ensemble
             forecast is activated. To activate other ensemble forecasts
             see Environment.selectEnsembleMemberMember().
-            
+
             - 'CustomAtmosphere': sets pressure, temperature, wind-u
             and wind-v profiles given though the pressure, temperature,
             wind-u and wind-v parameters of this method. If pressure
@@ -765,7 +765,7 @@ class Environment:
             An example is the following dicitonary, used for 'NOAA':
                                   {'time': 'time',
                                'latitude': 'lat',
-                              'longitude': 'lon', 
+                              'longitude': 'lon',
                                   'level': 'lev',
                                'ensemble': 'ens',
                             'temperature': 'tmpprs',
@@ -836,7 +836,7 @@ class Environment:
             Finally, a callable or function is also acepted. The
             function should take one argument, the height above sea
             level in meters and return a corresponding wind-v in m/s.
-        
+
         Return
         ------
         None
@@ -1286,7 +1286,7 @@ class Environment:
             Finally, a callable or function is also acepted. The
             function should take one argument, the height above sea
             level in meters and return a corresponding wind-v in m/s.
-        
+
         Return
         ------
         None
@@ -1394,7 +1394,7 @@ class Environment:
             http://weather.uwyo.edu/cgi-bin/sounding?region=samer&TYPE=TEXT%3ALIST&YEAR=2019&MONTH=02&FROM=0200&TO=0200&STNM=82599
             More can be found at:
             http://weather.uwyo.edu/upperair/sounding.html.
-            
+
         Returns
         -------
         None
@@ -1520,7 +1520,7 @@ class Environment:
             https://rucsoundings.noaa.gov/get_raobs.cgi?data_source=RAOB&latest=latest&start_year=2019&start_month_name=Feb&start_mday=5&start_hour=12&start_min=0&n_hrs=1.0&fcst_len=shortest&airport=83779&text=Ascii%20text%20%28GSD%20format%29&hydrometeors=false&start=latest
             More can be found at:
             https://rucsoundings.noaa.gov/.
-            
+
         Returns
         -------
         None
@@ -1680,13 +1680,13 @@ class Environment:
         profiles and surface elevation obtained from a weather
         file in netCDF format or from an OPeNDAP URL, both
         given through the file parameter. The date and location of the launch
-        should already have been set through the date and 
+        should already have been set through the date and
         location parameters when initializing the Environment.
-        The netCDF and OPeNDAP datasets must contain at least 
-        geopotential height or geopotential, temperature, 
+        The netCDF and OPeNDAP datasets must contain at least
+        geopotential height or geopotential, temperature,
         wind-u and wind-v profiles as a function of pressure levels.
         If surface geopotential or geopotential height is given,
-        elevation is also set. Otherwise, elevation is not changed. 
+        elevation is also set. Otherwise, elevation is not changed.
         Profiles are interpolated bi-linearly using supplied
         latitude and longitude. The date used is the nearest one
         to the date supplied. Furthermore, a dictionary must be
@@ -1711,7 +1711,7 @@ class Environment:
             generally used to read OPeNDAP files from NOAA's NOMAD
             server:               {'time': 'time',
                                'latitude': 'lat',
-                              'longitude': 'lon', 
+                              'longitude': 'lon',
                                   'level': 'lev',
                             'temperature': 'tmpprs',
             'surface_geopotential_height': 'hgtsfc',
@@ -1719,7 +1719,7 @@ class Environment:
                            'geopotential': None,
                                  'u_wind': 'ugrdprs',
                                  'v_wind': 'vgrdprs'}
-        
+
         Returns
         -------
         None
@@ -2061,10 +2061,10 @@ class Environment:
         profiles and surface elevation obtained from a weather
         ensemble file in netCDF format or from an OPeNDAP URL, both
         given through the file parameter. The date and location of the launch
-        should already have been set through the date and 
+        should already have been set through the date and
         location parameters when initializing the Environment.
-        The netCDF and OPeNDAP datasets must contain at least 
-        geopotential height or geopotential, temperature, 
+        The netCDF and OPeNDAP datasets must contain at least
+        geopotential height or geopotential, temperature,
         wind-u and wind-v profiles as a function of pressure
         levels. If surface geopotential or geopotential height
         is given, elevation is also set. Otherwise, elevation is not
@@ -2094,7 +2094,7 @@ class Environment:
             generally used to read OPeNDAP files from NOAA's NOMAD
             server:               {'time': 'time',
                                'latitude': 'lat',
-                              'longitude': 'lon', 
+                              'longitude': 'lon',
                                   'level': 'lev',
                                'ensemble': 'ens',
             'surface_geopotential_height': 'hgtsfc',
@@ -2102,7 +2102,7 @@ class Environment:
                            'geopotential': None,
                                  'u_wind': 'ugrdprs',
                                  'v_wind': 'vgrdprs'}
-        
+
         Returns
         -------
         None
@@ -2645,7 +2645,7 @@ class Environment:
 
         Returns
         -------
-        None       
+        None
         """
         # Retrieve pressure P, gas constant R and temperature T
         P = self.pressure
@@ -2675,7 +2675,7 @@ class Environment:
 
         Returns
         -------
-        None       
+        None
         """
         # Retrieve gas constant R and temperature T
         R = self.airGasConstant
@@ -2704,7 +2704,7 @@ class Environment:
 
         Returns
         -------
-        None       
+        None
         """
         # Retrieve temperature T and set constants
         T = self.temperature
@@ -2776,13 +2776,13 @@ class Environment:
         Parameters
         ----------
         None
-        
+
         Return
         ------
         None
         """
         # Print launch site details
-        print("Launch Site Details")
+        print("Detalles del sitio de lanzamiento")
         print("\nLaunch Rail Length: ", self.rL, " m")
         if self.date != None:
             print("Launch Date: ", self.date, " UTC")
@@ -2790,8 +2790,8 @@ class Environment:
             print("Launch Site Latitude: {:.5f}°".format(self.lat))
             print("Launch Site Longitude: {:.5f}°".format(self.lon))
         print("Reference Datum: " + self.datum)
-        print("Launch Site UTM coordinates: {:.2f} ".format(self.initialEast) 
-            + self.initialEW + "    {:.2f} ".format(self.initialNorth) + self.initialHemisphere 
+        print("Launch Site UTM coordinates: {:.2f} ".format(self.initialEast)
+            + self.initialEW + "    {:.2f} ".format(self.initialNorth) + self.initialHemisphere
         )
         print("Launch Site UTM zone:", str(self.initialUtmZone) + self.initialUtmLetter)
         print("Launch Site Surface Elevation: {:.1f} m".format(self.elevation))
@@ -2888,7 +2888,8 @@ class Environment:
         ax2.grid(True)
 
         plt.subplots_adjust(wspace=0.5)
-        plt.show()
+        #plt.show()
+        plt.savefig('books_read.png')
 
     def allInfo(self):
         """Prints out all data and graphs available about the Environment.
@@ -2896,7 +2897,7 @@ class Environment:
         Parameters
         ----------
         None
-        
+
         Return
         ------
         None
@@ -3124,23 +3125,23 @@ class Environment:
 
     # Auxiliary functions - Geodesic Coordinates
     def geodesicToUtm(self, lat, lon, datum):
-        """ Function that converts geodetic coordinates, i.e. lat/lon, to UTM 
-        projection coordinates. Can be used only for latitudes between -80.00° 
+        """ Function that converts geodetic coordinates, i.e. lat/lon, to UTM
+        projection coordinates. Can be used only for latitudes between -80.00°
         and 84.00°
 
         Parameters
         ----------
         lat : float
-            The latitude coordinates of the point of analysis, must be contained 
+            The latitude coordinates of the point of analysis, must be contained
             between -80.00° and 84.00°
         lon : float
-            The longitude coordinates of the point of analysis, must be contained 
+            The longitude coordinates of the point of analysis, must be contained
             between -180.00° and 180.00°
         datum : string
-            The desired reference ellipsoide model, the following optiions are 
-            available: "SAD69", "WGS84", "NAD83", and "SIRGAS2000". The default 
-            is "SIRGAS2000", then this model will be used if the user make some 
-            typing mistake  
+            The desired reference ellipsoide model, the following optiions are
+            available: "SAD69", "WGS84", "NAD83", and "SIRGAS2000". The default
+            is "SIRGAS2000", then this model will be used if the user make some
+            typing mistake
 
         Returns
         -------
@@ -3189,7 +3190,7 @@ class Environment:
         elif datum == "NAD83":
             semiMajorAxis = 6378137.0
             flattening = 1/298.257024899
-        else: 
+        else:
             # SIRGAS2000
             semiMajorAxis = 6378137.0
             flattening = 1/298.257223563
@@ -3220,7 +3221,7 @@ class Environment:
         E = np.sin(6*lat)
         F = (1 - e2/4 - 3*A/64 - 5*B/256)*lat
         G = (3*e2/8 + 3*A/32 + 45*B/1024)*C
-        H = (15*A/256 + 45*B/1024)*D 
+        H = (15*A/256 + 45*B/1024)*D
         I = (35*B/3072)*E
 
         # Evaluate other reference parameters
@@ -3233,7 +3234,7 @@ class Environment:
         # Evaluate new auxiliary parameters
         J = (1 - t + c)*ag*ag*ag/6
         K = (5 - 18*t + t*t + 72*c - 58*e2lin)*(ag**5)/120
-        L = (5 - t + 9*c + 4*c*c)*ag*ag*ag*ag/24 
+        L = (5 - t + 9*c + 4*c*c)*ag*ag*ag*ag/24
         M = (61 - 58*t + t*t + 600*c - 330*e2lin)*(ag**6)/720
 
         # Evaluate the final coordinates
@@ -3251,12 +3252,12 @@ class Environment:
         # Calculate the UTM zone letter
         letters = 'CDEFGHJKLMNPQRSTUVWXX'
         utmLetter = letters[int(80 + lat)>>3]
-        
+
         return x, y, utmZone, utmLetter, hemis, EW
 
     def utmToGeodesic(self, x, y, utmZone, hemis, datum):
-        """ Function to convert UTM coordinates to geodesic coordinates 
-        (i.e. latitude and longitude). The latitude should be between -80° 
+        """ Function to convert UTM coordinates to geodesic coordinates
+        (i.e. latitude and longitude). The latitude should be between -80°
         and 84°
 
         Parameters
@@ -3271,9 +3272,9 @@ class Environment:
         hemis : string
             Equals to "S" for southern hemisphere and "N" for Northern hemisphere
         datum : string
-            The desired reference ellipsoide model, the following optiions are 
-            available: "SAD69", "WGS84", "NAD83", and "SIRGAS2000". The default 
-            is "SIRGAS2000", then this model will be used if the user make some 
+            The desired reference ellipsoide model, the following optiions are
+            available: "SAD69", "WGS84", "NAD83", and "SIRGAS2000". The default
+            is "SIRGAS2000", then this model will be used if the user make some
             typing mistake
 
         Returns
@@ -3283,7 +3284,7 @@ class Environment:
         lon: float
             latitude of the analysed point
         """
-        
+
         if hemis == "N":
             y = y + 10000000
 
@@ -3300,7 +3301,7 @@ class Environment:
         elif datum == "NAD83":
             semiMajorAxis = 6378137.0
             flattening = 1/298.257024899
-        else: 
+        else:
             # SIRGAS2000
             semiMajorAxis = 6378137.0
             flattening = 1/298.257223563
@@ -3310,11 +3311,11 @@ class Environment:
         e2 = 2*flattening - flattening**2
         e2lin = e2/(1-e2)
         e1 = (1 - (1-e2)**0.5)/(1+(1-e2)**0.5)
-        
+
         # Calculate auxiliary values
         A = e2*e2
         B = A*e2
-        C = e1*e1 
+        C = e1*e1
         D = e1*C
         E = e1*D
 
@@ -3342,8 +3343,8 @@ class Environment:
 
         # Finally calcute the coordinates in lat/lot
         lat = lat1 - (n1*np.tan(lat1)/r1)*(d*d/2 - I + J)
-        lon = centralMeridian*np.pi/180 + (K + L)/np.cos(lat1) 
-    
+        lon = centralMeridian*np.pi/180 + (K + L)/np.cos(lat1)
+
         # Convert final lat/lon to Degrees
         lat = lat*180/np.pi
         lon = lon*180/np.pi
@@ -3354,19 +3355,19 @@ class Environment:
         """ Simple function to calculate the Earth Radius at a specific latitude
         based on ellipsoidal reference model (datum). The earth radius here is
         assumed as the distance between the ellipsoid's center of gravity and a
-        point on ellipsoid surface at the desired 
+        point on ellipsoid surface at the desired
         Pay attention: The ellipsoid is an ideal earth model and obvously will
         not give us the perfect distance between earth relief and its center of
-        gravity. 
+        gravity.
 
         Parameters
         ----------
         lat : float
-            latitude in which the Earth radius will be calculated 
+            latitude in which the Earth radius will be calculated
         datum : string
-            The desired reference ellipsoide model, the following optiions are 
-            available: "SAD69", "WGS84", "NAD83", and "SIRGAS2000". The default 
-            is "SIRGAS2000", then this model will be used if the user make some 
+            The desired reference ellipsoide model, the following optiions are
+            available: "SAD69", "WGS84", "NAD83", and "SIRGAS2000". The default
+            is "SIRGAS2000", then this model will be used if the user make some
             typing mistake
 
         Returns
@@ -3384,7 +3385,7 @@ class Environment:
         elif datum == "NAD83":
             semiMajorAxis = 6378137.0
             flattening = 1/298.257024899
-        else: 
+        else:
             # SIRGAS2000
             semiMajorAxis = 6378137.0
             flattening = 1/298.257223563
@@ -3416,13 +3417,13 @@ class Environment:
         angle : float
             The angle that you need convert to deg/min/sec. Must be given in
             decimal degrees
-            
+
         Returns
         -------
         deg: float
             The degrees
         min: float
-            The arc minutes. 1 arc-minute = (1/60)*degree 
+            The arc minutes. 1 arc-minute = (1/60)*degree
         sec: float
             The arc Seconds. 1 arc-secon = (1/360)*degree
         """
@@ -3443,17 +3444,17 @@ class Environment:
 
     def printEarthDetails(self):
         """ [UNDER CONSTRUCTION]
-        Function to print informations about the Earth Model used in the 
+        Function to print informations about the Earth Model used in the
         Evironment Class
-        
+
         """
         # Print launch site details
         #print("Launch Site Details")
         #print("Launch Site Latitude: {:.5f}°".format(self.lat))
         #print("Launch Site Longitude: {:.5f}°".format(self.lon))
         #print("Reference Datum: " + self.datum)
-        #print("Launch Site UTM coordinates: {:.2f} ".format(self.initialEast) 
-        #    + self.initialEW + "    {:.2f} ".format(self.initialNorth) + self.initialHemisphere 
+        #print("Launch Site UTM coordinates: {:.2f} ".format(self.initialEast)
+        #    + self.initialEW + "    {:.2f} ".format(self.initialNorth) + self.initialHemisphere
         #)
         #print("Launch Site UTM zone number: ", self.initialUtmZone)
         #print("Launch Site Surface Elevation: {:.1f} m".format(self.elevation))
@@ -3461,4 +3462,3 @@ class Environment:
         print("Gravity acceleration at launch site: Still not implemented :(")
 
         return None
-
